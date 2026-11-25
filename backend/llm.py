@@ -28,8 +28,13 @@ class AllProvidersUnavailableError(Exception):
 # ── Disk cache (diskcache library) ────────────────────────────────────────────
 def _make_disk_cache() -> diskcache.Cache:
     cache_dir = settings.llm_cache_dir
-    os.makedirs(cache_dir, exist_ok=True)
-    dc = diskcache.Cache(cache_dir, size_limit=500 * 1024 * 1024)  # 500 MB
+    # If relative path fails (e.g. read-only filesystem on Render), fall back to /tmp
+    try:
+        os.makedirs(cache_dir, exist_ok=True)
+    except (PermissionError, OSError):
+        cache_dir = "/tmp/llm_cache"
+        os.makedirs(cache_dir, exist_ok=True)
+    dc = diskcache.Cache(cache_dir, size_limit=200 * 1024 * 1024)
     print(f"[CACHE] disk cache ready at {cache_dir}", flush=True)
     return dc
 
@@ -166,3 +171,4 @@ def generate_chat_reply(
             continue
 
     raise AllProvidersUnavailableError(str(last_error or "all providers unavailable"))
+

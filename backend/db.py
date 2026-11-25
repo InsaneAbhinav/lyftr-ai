@@ -17,6 +17,9 @@ def _resolve_sqlite_path(database_url: str) -> str:
 
 
 DB_PATH = _resolve_sqlite_path(settings.database_url)
+# Fallback to /tmp if resolved path is relative (read-only filesystem)
+if not os.path.isabs(DB_PATH):
+    DB_PATH = "/tmp/app.db"
 
 
 @contextmanager
@@ -181,4 +184,5 @@ def delete_session(session_id: str, user_id: int) -> bool:
         )
         conn.commit()
     return cur.rowcount > 0
+
 
