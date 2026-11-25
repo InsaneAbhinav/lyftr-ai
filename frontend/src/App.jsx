@@ -275,8 +275,8 @@ export default function App() {
                         <span style={S.sessionCount}>{s.msg_count} turn{s.msg_count !== 1 ? "s" : ""}</span>
                       </div>
                     </button>
-                    <button style={S.deleteBtn} onClick={e => { e.stopPropagation(); setDeleteConfirm(s.session_id); }} title="Delete">
-                      🗑
+                    <button style={S.deleteBtn} className="del-btn" onClick={e => { e.stopPropagation(); setDeleteConfirm(s.session_id); }} title="Delete conversation">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="8" y="2" width="8" height="3" rx="1" stroke="currentColor" strokeWidth="1.8"/><path d="M3 7h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M5 7l1.5 12.5A1.5 1.5 0 007.99 21h8.02a1.5 1.5 0 001.49-1.5L19 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 11v5M14 11v5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
                     </button>
                   </div>
                 );
@@ -486,7 +486,7 @@ const S = {
   sessionMeta: { display: "flex", justifyContent: "space-between" },
   sessionTime: { fontSize: "10px", color: "#475569" },
   sessionCount: { fontSize: "10px", color: "#475569" },
-  deleteBtn: { background: "transparent", border: "none", color: "#edeeef", cursor: "pointer", padding: "4px 8px", display: "flex", alignItems: "center", flexShrink: 0, borderRadius: "5px", opacity: 0.5 },
+  deleteBtn: { background: "transparent", border: "none", color: "#4b5563", cursor: "pointer", padding: "5px 7px", display: "flex", alignItems: "center", flexShrink: 0, borderRadius: "6px", transition: "all 0.2s ease" },
   sidebarFooter: { padding: "10px 12px", borderTop: "1px solid rgba(99,102,241,0.08)", display: "flex", alignItems: "center", gap: "7px" },
   sidebarStatus: { fontSize: "11px", color: "#475569" },
   userChip: { display: "flex", alignItems: "center", gap: "5px" },
