@@ -486,7 +486,7 @@ const S = {
   sessionMeta: { display: "flex", justifyContent: "space-between" },
   sessionTime: { fontSize: "10px", color: "#475569" },
   sessionCount: { fontSize: "10px", color: "#475569" },
-  deleteBtn: { background: "transparent", border: "none", color: "#475569", cursor: "pointer", padding: "4px 8px", display: "flex", alignItems: "center", flexShrink: 0, borderRadius: "5px", opacity: 0.5 },
+  deleteBtn: { background: "transparent", border: "none", color: "#edeeef", cursor: "pointer", padding: "4px 8px", display: "flex", alignItems: "center", flexShrink: 0, borderRadius: "5px", opacity: 0.5 },
   sidebarFooter: { padding: "10px 12px", borderTop: "1px solid rgba(99,102,241,0.08)", display: "flex", alignItems: "center", gap: "7px" },
   sidebarStatus: { fontSize: "11px", color: "#475569" },
   userChip: { display: "flex", alignItems: "center", gap: "5px" },
