@@ -1,13 +1,17 @@
-# LLM Chatbot with Key Failover & Response Caching
+# Lyftr AI - LLM Chatbot with Key Failover and Response Caching
 
-A full-stack LLM chatbot built with FastAPI, LiteLLM, SQLite, React (Vite), and Docker. It supports automatic multi-provider key failover (`groq/llama-3.3-70b-versatile` -> `gemini/gemini-2.0-flash`), deterministic response caching via LiteLLM, failure simulation headers, and persistent session history.
+A full-stack LLM chatbot built with FastAPI, LiteLLM, SQLite, React (Vite), and Docker. It supports automatic multi-provider key failover (`groq/openai/gpt-oss-20b` -> `groq/openai/gpt-oss-120b`), deterministic response caching via LiteLLM, failure simulation headers, and persistent session history.
 
 ## 1. Live URLs
 
-- **Frontend UI (Docker / Vite):** http://localhost:3000
-- **Backend API:** http://localhost:8000
-- **Backend Health Check:** http://localhost:8000/health
-- **Backend OpenAPI Docs:** http://localhost:8000/docs
+- **Frontend UI (Docker / Vite):** https://lyftr-ai.vercel.app (deployed)
+- **Local Frontend:** http://localhost:3000
+- **Backend API:** https://lyftr-ai-backend-x6is.onrender.com (deployed)
+- **Local Backend:** http://localhost:8000
+- **Backend Health Check:** https://lyftr-ai-backend-x6is.onrender.com (deployed)
+- **Local Backend:** http://localhost:8000/health
+- **Backend OpenAPI Docs:** https://lyftr-ai-backend-x6is.onrender.com (deployed)
+- **Local Backend:** http://localhost:8000/docs
 
 ## 2. Run locally: with Docker and without
 
@@ -17,7 +21,7 @@ A full-stack LLM chatbot built with FastAPI, LiteLLM, SQLite, React (Vite), and 
    ```bash
    cp .env.example .env
    ```
-   Edit `.env` and set `GROQ_API_KEY` and `GEMINI_API_KEY`.
+   Edit `.env` and set `GROQ_API_KEY` and `GROQ_API_KEY_2`.
 
 2. Build and start both services:
    ```bash
@@ -34,7 +38,7 @@ A full-stack LLM chatbot built with FastAPI, LiteLLM, SQLite, React (Vite), and 
    ```bash
    cd backend
    cp .env.example .env
-   # Set GROQ_API_KEY, GEMINI_API_KEY, and e.g. DATABASE_URL=sqlite:///./app.db, LLM_CACHE_DIR=./llm_cache
+   # Set GROQ_API_KEY, GROQ_API_KEY_2, and e.g. DATABASE_URL=sqlite:///./app.db, LLM_CACHE_DIR=./llm_cache
    python -m venv .venv
    # Windows: .venv\Scripts\activate  |  macOS/Linux: source .venv/bin/activate
    pip install -r requirements.txt
@@ -52,7 +56,7 @@ A full-stack LLM chatbot built with FastAPI, LiteLLM, SQLite, React (Vite), and 
 ## 3. Design decisions: key fallback, caching, SQLite session storage
 
 - **Key Fallback (`backend/llm.py`):**
-  Uses `litellm.Router` configured with two distinct provider keys: `key_1` (`groq/llama-3.3-70b-versatile`) and `key_2` (`gemini/gemini-2.0-flash`), plus `fallbacks=[{"key_1": ["key_2"]}, {"key_2": ["key_1"]}]`. A deterministic per-key loop invokes `router.completion(model=key_id, ...)` so that simulated failures (via `X-Simulate-Failure` when `ENABLE_FAILURE_SIMULATION=true`) short-circuit before hitting the provider while counting `fallback_attempts`. If all keys fail, the API returns HTTP `503` with `{"detail":"all providers unavailable"}` and never writes the failed turn to SQLite.
+  Uses `litellm.Router` configured with two distinct provider keys: `key_1` (`groq/openai/gpt-oss-20b`) and `key_2` (`groq/openai/gpt-oss-120b`), plus `fallbacks=[{"key_1": ["key_2"]}, {"key_2": ["key_1"]}]`. A deterministic per-key loop invokes `router.completion(model=key_id, ...)` so that simulated failures (via `X-Simulate-Failure` when `ENABLE_FAILURE_SIMULATION=true`) short-circuit before hitting the provider while counting `fallback_attempts`. If all keys fail, the API returns HTTP `503` with `{"detail":"all providers unavailable"}` and never writes the failed turn to SQLite.
 
 - **Caching (`backend/llm.py`):**
   Enables LiteLLM's disk cache (`Cache(type="disk", disk_cache_dir="/data/llm_cache")`) via `litellm.enable_cache()` and passes `cache={"no-cache": False, "no-store": False}` on every completion call. Cache keys are discriminated by the model plus the full `messages` array (`[system_prompt?, ...history, new_message]`). Cache hits are detected from `response._hidden_params.get("cache_hit") == True`, returning `resolution_source="LLM_CACHE"`, `key_id=null`, and `fallback_attempts=0`.
@@ -64,7 +68,8 @@ A full-stack LLM chatbot built with FastAPI, LiteLLM, SQLite, React (Vite), and 
 
 1. **Health Check:**
    ```bash
-   curl http://localhost:8000/health
+   curl https://lyftr-ai-backend-x6is.onrender.com (deployed)
+- **Local Backend:** http://localhost:8000/health
    ```
    Verify `keys_configured` is `2` and `cache_enabled` is `true`.
 
@@ -75,7 +80,7 @@ A full-stack LLM chatbot built with FastAPI, LiteLLM, SQLite, React (Vite), and 
    Click **New Session** (or use a new `session_id` in `curl`) and send the exact same first message (with the same system prompt). The response returns `resolution_source: "LLM_CACHE"`, `key_id: null`, `fallback_attempts: 0`, and near-zero latency. Sending a different message triggers `LIVE_INFERENCE`.
 
 4. **Failover Simulation:**
-   Enter `key_1=429` in the **X-Simulate-Failure** field in the UI (or pass `-H "X-Simulate-Failure: key_1=429"` in `curl`). The backend skips `key_1` without calling Groq, falls back to `key_2` (`gemini/gemini-2.0-flash`), and returns the real Gemini response with `fallback_attempts: 1` and `key_id: "key_2"`. Sending `*=429` returns HTTP `503` (`all providers unavailable`) and is not saved to session history.
+   Enter `key_1=429` in the **X-Simulate-Failure** field in the UI (or pass `-H "X-Simulate-Failure: key_1=429"` in `curl`). The backend skips `key_1` without calling Groq, falls back to `key_2` (`groq/openai/gpt-oss-120b`), and returns the real Gemini response with `fallback_attempts: 1` and `key_id: "key_2"`. Sending `*=429` returns HTTP `503` (`all providers unavailable`) and is not saved to session history.
 
 ## 5. Setup Used: your editor and AI tools
 

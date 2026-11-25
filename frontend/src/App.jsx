@@ -267,7 +267,7 @@ export default function App() {
               {sessions.map(s => {
                 const isActive = s.session_id === sessionId;
                 return (
-                  <div key={s.session_id} style={{ ...S.sessionItem, ...(isActive ? S.sessionItemActive : {}) }}>
+                  <div key={s.session_id} style={{ ...S.sessionItem, ...(isActive ? S.sessionItemActive : {}) }} className="session-item-wrap">
                     <button style={S.sessionBtn} onClick={() => loadSession(s.session_id)}>
                       <div style={S.sessionPreview}>{s.preview || "New conversation"}</div>
                       <div style={S.sessionMeta}>
@@ -486,7 +486,7 @@ const S = {
   sessionMeta: { display: "flex", justifyContent: "space-between" },
   sessionTime: { fontSize: "10px", color: "#475569" },
   sessionCount: { fontSize: "10px", color: "#475569" },
-  deleteBtn: { background: "transparent", border: "none", color: "#334155", fontSize: "12px", cursor: "pointer", padding: "0 8px", display: "flex", alignItems: "center", flexShrink: 0 },
+  deleteBtn: { background: "transparent", border: "none", color: "transparent", cursor: "pointer", padding: "4px 8px", display: "flex", alignItems: "center", flexShrink: 0, borderRadius: "5px" },
   sidebarFooter: { padding: "10px 12px", borderTop: "1px solid rgba(99,102,241,0.08)", display: "flex", alignItems: "center", gap: "7px" },
   sidebarStatus: { fontSize: "11px", color: "#475569" },
   userChip: { display: "flex", alignItems: "center", gap: "5px" },
