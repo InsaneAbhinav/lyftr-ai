@@ -13,9 +13,9 @@
       - key: SECRET_KEY
         sync: false
       - key: DATABASE_URL
-        value: sqlite:///./app.db
+        value: sqlite:////tmp/app.db
       - key: LLM_CACHE_DIR
-        value: ./llm_cache
+        value: /tmp/llm_cache
       - key: FRONTEND_ORIGIN
         value: "*"
       - key: ENABLE_FAILURE_SIMULATION
@@ -34,3 +34,4 @@
       - type: rewrite
         source: /*
         destination: /index.html
+
