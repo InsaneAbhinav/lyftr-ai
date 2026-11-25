@@ -32,16 +32,16 @@ const FAILURE_PRESETS = [
 ];
 
 function LyftrLogo({ size = 32 }) {
+  const id = "lg" + Math.random().toString(36).slice(2, 7);
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <rect width="40" height="40" rx="10" fill="url(#lg)" />
-      <path d="M12 28L20 12L28 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M15 23H25" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
       <defs>
-        <linearGradient id="lg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+        <linearGradient id={id} x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
           <stop stopColor="#6366f1" /><stop offset="1" stopColor="#06b6d4" />
         </linearGradient>
       </defs>
+      <rect width="40" height="40" rx="10" fill={`url(#${id})`} />
+      <path d="M22 6 L13 21 L19 21 L18 34 L27 19 L21 19 Z" fill="white" />
     </svg>
   );
 }
@@ -539,5 +539,6 @@ const S = {
   sendDisabled: { opacity: 0.3, cursor: "not-allowed", boxShadow: "none" },
   footerNote: { marginTop: "6px", textAlign: "center", fontSize: "10px", color: "#1e293b", letterSpacing: "0.03em" },
 };
+
 
 
