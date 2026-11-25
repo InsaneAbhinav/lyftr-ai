@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: lyftrai-backend:latest
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - appdata:/data
+    environment:
+      - DATABASE_URL=sqlite:////data/app.db
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE: http://localhost:8000
+    image: lyftrai-frontend:latest
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  appdata:

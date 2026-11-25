@@ -1,0 +1,30 @@
+﻿# Environment files — never commit secrets
+.env
+backend/.env
+frontend/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# DB and cache
+*.db
+*.db-shm
+*.db-wal
+llm_cache/
+/data/
+
+# OS
+.DS_Store
+Thumbs.db
