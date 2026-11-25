@@ -1,11 +1,11 @@
-{
+﻿{
   "name": "llm-chatbot-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "./node_modules/.bin/vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -17,3 +17,4 @@
     "vite": "^5.4.11"
   }
 }
+
