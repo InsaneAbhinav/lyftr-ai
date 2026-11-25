@@ -29,9 +29,10 @@
     rootDir: frontend
     envVars:
       - key: VITE_API_BASE
-        sync: false
+        value: https://lyftr-ai-backend-x6is.onrender.com
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
+
 
